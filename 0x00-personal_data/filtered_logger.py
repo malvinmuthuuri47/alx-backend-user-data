@@ -5,7 +5,7 @@ import re
 from typing import List
 
 
-def filter_datum(fields: List, redaction: str,
+def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """
         This func replaces a matching str in another string with a specific str
