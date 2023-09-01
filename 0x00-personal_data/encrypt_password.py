@@ -17,4 +17,14 @@ def hash_password(password: int) -> ByteString:
 
 
 def is_valid(hashed_password: bytes, password: str) -> bool:
+    """This function checks if a password is equal to its equivalent
+    byte string that has been passed through a hashing function
+
+    Args:
+        hashed_password: the hashed password
+        password: The original password
+
+    Returns:
+        True if the hashed and original password match and False otherwise
+    """
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
