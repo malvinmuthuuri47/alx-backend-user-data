@@ -2,7 +2,7 @@
 """Regex-ing"""
 
 import re
-from typing import List
+from typing import List, Tuple
 import logging
 
 
@@ -14,7 +14,7 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "{HOLBERTON} %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields: str):
+    def __init__(self, fields: Tuple[str]):
         """The constructor function that accepts fields and calls the
         super class constructor to initialize the child class"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
