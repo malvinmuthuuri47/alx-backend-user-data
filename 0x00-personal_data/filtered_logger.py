@@ -24,7 +24,7 @@ class RedactingFormatter(logging.Formatter):
         """The constructor function that accepts fields and calls the
         super class constructor to initialize the child class"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
-        self.fields = fields if fields else PII_FIELDS
+        self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
         """
