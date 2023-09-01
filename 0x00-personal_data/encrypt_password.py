@@ -5,7 +5,7 @@ import bcrypt
 from typing import bytes
 
 
-def hash_password(password: int) -> bytes:
+def hash_password(password: str) -> bytes:
     """This function takes a password as an argument and performs
     a hashing on the function
 
