@@ -41,6 +41,7 @@ def filter_datum(fields: List[str], redaction: str,
     return re.sub(rf"({'|'.join(fields)})=[^{separator}]*",
                   rf"\1={redaction}", message)
 
+
 def get_logger() -> logging.Logger:
     """
     This function creates a Logger and a streamhandler for that logger
@@ -61,7 +62,7 @@ def get_logger() -> logging.Logger:
 
     # create a redactingFormatter and set it for the handler
     formatter = RedactingFormatter(fields=("email", "ssn", "password"))
-    stream_handler.set_formatter(formatter)
+    stream_handler.setFormatter(formatter)
 
     # Add the handler to the logger
     logger.addHandler(stream_handler)
@@ -92,3 +93,45 @@ def get_db():
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
+
+
+def main():
+    """This function obtains a db connection using get_db, retrieves all
+    rows and in the user while filtering the rows with a specific format
+    """
+
+    logger = get_logger()
+    db_connection = get_db()
+
+    if db_connection:
+        try:
+            cursor = db_connection.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM users")
+
+            # Fetch all rows
+            rows = cursor.fetchall()
+
+            # Log the filtered rows
+            for row in rows:
+                # Create a log message using the desired format
+                log_message = (
+                        f"name={RedactingFormatter.REDACTION}; "
+                        f"email={RedactingFormatter.REDACTION}; "
+                        f"phone={RedactingFormatter.REDACTION}; "
+                        f"ssn={RedactingFormatter.REDACTION}; "
+                        f"password={RedactingFormatter.REDACTION}; "
+                        f"ip={row['ip']}; "
+                        f"last_login={row['last_login']}; "
+                        f"user_agent={row['user_agent']}; "
+                        )
+                # Log the info
+                logger.info(log_message)
+        except Exception as e:
+            logger.error(f"Error retrieving data: {str(e)}")
+        finally:
+            cursor.close()
+            db_connection.close()
+
+
+if __name__ == '__main__':
+    main()
