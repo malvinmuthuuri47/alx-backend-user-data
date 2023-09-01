@@ -6,6 +6,10 @@ from typing import List, Tuple
 import logging
 
 
+# Define PII_FIELDS tuple
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
 class RedactingFormatter(logging.Formatter):
     """Redacting Formatter class
     """
@@ -18,7 +22,7 @@ class RedactingFormatter(logging.Formatter):
         """The constructor function that accepts fields and calls the
         super class constructor to initialize the child class"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
-        self.fields = fields
+        self.fields = fields if fields else PII_FIELDS
 
     def format(self, record: logging.LogRecord) -> str:
         """This function returns logging info while calling filter_datum"""
@@ -34,6 +38,34 @@ def filter_datum(fields: List[str], redaction: str,
     """
     return re.sub(rf"({'|'.join(fields)})=[^{separator}]*",
                   rf"\1={redaction}", message)
+
+
+def get_logger() -> logging.Logger:
+    """
+    This function creates a Logger and a streamhandler for that logger
+
+    The function also defines propagation to prevent the logger from
+    propagating log messages to the parent logger
+
+    Returns:
+        This function returns a logging.logger object
+    """
+    logger = logging.getLogger('user_data')  # Create logger
+
+    logger.setLevel(logging.INFO)  # set logger level
+
+    logger.propagate = False  # Prevent propagation
+
+    stream_handler = logging.StreamHandler()  # Create streamhandler
+
+    # create a redactingFormatter and set it for the handler
+    formatter = RedactingFormatter(fields=("email", "ssn", "password"))
+    stream_handler.set_formatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(stream_handler)
+
+    return logger
 
 
 if __name__ == '__main__':
