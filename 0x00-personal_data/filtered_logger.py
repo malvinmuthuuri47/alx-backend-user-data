@@ -41,7 +41,6 @@ def filter_datum(fields: List[str], redaction: str,
     return re.sub(rf"({'|'.join(fields)})=[^{separator}]*",
                   rf"\1={redaction}", message)
 
-@property
 def get_logger() -> logging.Logger:
     """
     This function creates a Logger and a streamhandler for that logger
