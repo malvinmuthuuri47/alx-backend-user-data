@@ -4,6 +4,8 @@
 import re
 from typing import List, Tuple
 import logging
+import os
+import mysql.connector
 
 
 # Define PII_FIELDS tuple
@@ -18,7 +20,7 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "{HOLBERTON} %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields: Tuple[str]):
+    def __init__(self, fields: List[str]):
         """The constructor function that accepts fields and calls the
         super class constructor to initialize the child class"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
@@ -68,5 +70,26 @@ def get_logger() -> logging.Logger:
     return logger
 
 
-if __name__ == '__main__':
-    main()
+def get_db():
+    """This function attempts to establish a connection with MySQL Db
+    by getting variables stored in the shell environment and using them
+    as credentials to login to the database
+    """
+    # Get db credentials from environment variables
+    db_username = os.environ.get('PERSONAL_DATA_DB_USERNAME', 'root')
+    db_password = os.environ.get('PERSONAL_DATA_DB_PASSWORD', '')
+    db_host = os.environ.get('PERSONAL_DATA_DB_HOST', 'localhost')
+    db_name = os.environ.get('PERSONAL_DATA_DB_NAME')
+
+    # Create a MySQL connection
+    try:
+        connection = mysql.connector.connect(
+                user=db_username,
+                password=db_password,
+                host=db_host,
+                database=db_name
+                )
+        return connection
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
