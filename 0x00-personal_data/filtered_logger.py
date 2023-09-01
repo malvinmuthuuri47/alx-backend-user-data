@@ -27,10 +27,13 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields if fields else PII_FIELDS
 
     def format(self, record: logging.LogRecord) -> str:
-        """This function returns logging info while calling filter_datum"""
-        message = super().format(record)
-        return filter_datum(self.fields, self.REDACTION, message,
-                            self.SEPARATOR)
+        """
+        Formats the specified log record as text.
+        Filters values in incoming log record using filter_datum
+        """
+        message = super(RedactingFormatter, self).format(record)
+        return filter_datum(self.fields, self.REDACTION,
+                            message, self.SEPARATOR)
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -95,7 +98,7 @@ def get_db():
         return None
 
 
-def main():
+def main() -> None:
     """This function obtains a db connection using get_db, retrieves all
     rows and in the user while filtering the rows with a specific format
     """
