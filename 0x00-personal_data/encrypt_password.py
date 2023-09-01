@@ -5,7 +5,7 @@ import bcrypt
 from typing import ByteString
 
 
-def hash_password(password) -> ByteString:
+def hash_password(password: int) -> ByteString:
     """This function takes a password as an argument and performs
     a hashing on the function
 
@@ -14,3 +14,7 @@ def hash_password(password) -> ByteString:
     salt = bcrypt.gensalt()
     hashed_pass = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_pass
+
+
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
