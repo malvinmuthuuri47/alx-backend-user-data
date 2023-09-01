@@ -2,7 +2,7 @@
 """Regex-ing"""
 
 import re
-from typing import List, Tuple
+from typing import List
 import logging
 import os
 import mysql.connector
@@ -26,7 +26,7 @@ class RedactingFormatter(logging.Formatter):
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields if fields else PII_FIELDS
 
-    def format(self, record: logging.LogRecord) -> str:
+    def format(self, record: logging.LogRecord) -> List[str]:
         """
         Formats the specified log record as text.
         Filters values in incoming log record using filter_datum
