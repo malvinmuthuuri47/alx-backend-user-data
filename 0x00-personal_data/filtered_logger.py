@@ -21,11 +21,7 @@ class RedactingFormatter(logging.Formatter):
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        """
-        This function returns the logging format for the message passed
-        and calles the filter_datum to handle obfuscation returning the
-        output of that function
-        """
+        """This function returns logging info while calling filter_datum"""
         message = super().format(record)
         return filter_datum(self.fields, self.REDACTION, message,
                             self.SEPARATOR)
@@ -38,6 +34,7 @@ def filter_datum(fields: List[str], redaction: str,
     """
     return re.sub(rf"({'|'.join(fields)})=[^{separator}]*",
                   rf"\1={redaction}", message)
+
 
 if __name__ == '__main__':
     main()
