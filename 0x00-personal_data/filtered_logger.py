@@ -12,26 +12,6 @@ import mysql.connector
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
-class RedactingFormatter(logging.Formatter):
-    """Redacting Formatter class
-    """
-
-    REDACTION = "***"
-    FORMAT = "{HOLBERTON} %(name)s %(levelname)s %(asctime)-15s: %(message)s"
-    SEPARATOR = ";"
-
-    def __init__(self, fields: List[str]):
-        """The constructor function that accepts fields and calls the
-        super class constructor to initialize the child class"""
-        super(RedactingFormatter, self).__init__(self.FORMAT)
-        self.fields = fields if fields else PII_FIELDS
-
-    def format(self, record: logging.LogRecord) -> str:
-        """This function returns logging info while calling filter_datum"""
-        message = super().format(record)
-        return filter_datum(self.fields, self.REDACTION, message,
-                            self.SEPARATOR)
-
 
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
@@ -93,3 +73,23 @@ def get_db():
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return None
+
+class RedactingFormatter(logging.Formatter):
+    """Redacting Formatter class
+    """
+
+    REDACTION = "***"
+    FORMAT = "{HOLBERTON} %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        """The constructor function that accepts fields and calls the
+        super class constructor to initialize the child class"""
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields if fields else PII_FIELDS
+
+    def format(self, record: logging.LogRecord) -> str:
+        """This function returns logging info while calling filter_datum"""
+        message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION, message,
+                            self.SEPARATOR)
