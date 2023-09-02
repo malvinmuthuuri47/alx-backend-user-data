@@ -26,7 +26,7 @@ class RedactingFormatter(logging.Formatter):
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields if fields else PII_FIELDS
 
-    def format(self, record: logging.LogRecord) -> List[str]:
+    def format(self, record: logging.LogRecord) -> str:
         """Formats the specified log record as text.
         Filters values in incoming log record using filter_datum"""
         record.msg = filter_datum(self.fields, self.REDACTION,
