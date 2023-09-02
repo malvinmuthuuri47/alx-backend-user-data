@@ -2,6 +2,7 @@
 """Regex-ing"""
 
 import re
+from typing import List
 import logging
 import os
 import mysql.connector
@@ -19,23 +20,21 @@ class RedactingFormatter(logging.Formatter):
     FORMAT = "{HOLBERTON} %(name)s %(levelname)s %(asctime)-15s: %(message)s"
     SEPARATOR = ";"
 
-    def __init__(self, fields: list[str]):
+    def __init__(self, fields: List[str]):
         """The constructor function that accepts fields and calls the
         super class constructor to initialize the child class"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields if fields else PII_FIELDS
 
-    def format(self, record: logging.LogRecord) -> list[str]:
-        """
-        Formats the specified log record as text.
-        Filters values in incoming log record using filter_datum
-        """
+    def format(self, record: logging.LogRecord) -> List[str]:
+        """Formats the specified log record as text.
+        Filters values in incoming log record using filter_datum"""
         record.msg = filter_datum(self.fields, self.REDACTION,
                                   record.getMessage(), self.SEPARATOR)
         return super(RedactingFormatter, self).format(record)
 
 
-def filter_datum(fields: list[str], redaction: str,
+def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """
         This func replaces a matching str in another string with a specific str
