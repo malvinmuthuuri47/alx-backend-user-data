@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Module documentation"""
+"""A module that contains a class that manages the API authentication"""
 
 from flask import request
 from typing import List, TypeVar
@@ -7,13 +7,13 @@ from typing import List, TypeVar
 
 class Auth:
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """Function documentation"""
+        """require_auth function"""
         return False
 
     def authorization_header(self, request=None) -> str:
-        """Function documentation"""
+        """authorization_header function"""
         return None
 
     def current_user(self, request=None) -> TypeVar('User'):
-        """Function documentation"""
+        """current_user function"""
         return None
