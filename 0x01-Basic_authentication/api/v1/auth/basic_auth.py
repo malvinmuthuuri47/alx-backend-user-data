@@ -14,7 +14,7 @@ class BasicAuth(Auth):
             self, authorization_header: str
             ) -> str:
         """This function returns the Base64 part of the authorization header
-        for a basiic authentication provided that the authorization header
+        for a basic authentication provided that the authorization header
         passes the criteria
 
         Requirements:
@@ -123,3 +123,13 @@ class BasicAuth(Auth):
             if user.is_valid_password(user_pwd):
                 return user
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """This method overloads Auth and retrieves the User instance
+        for a request"""
+        auth_header = self.authorization_header(request)
+        encoding = self.extract_base64_authorization_header(auth_header)
+        decoding = self.decode_base64_authorization_header(encoding)
+        email, passwd = self.extract_user_credentials(decoding)
+        user = self.user_object_from_credentials(email, passwd)
+        return user
