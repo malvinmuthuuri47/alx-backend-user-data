@@ -63,3 +63,34 @@ class BasicAuth(Auth):
             return decoded_str
         except (binascii.Error, UnicodeDecodeError, TypeError):
             return None
+        return
+
+    def extract_user_credentials(
+            self, decoded_base64_authorization_header: str
+            ) -> (str, str):
+        """This function returns a tuple with either the values present in the
+        decoded string or None if the values in the decoded string don't pass
+        the criteria
+
+        Requirements:
+            - If decoded string is None, return None
+            - If decoded string is not an instance of a string, return None
+            - If : is present in the decoded string, split the string using
+              the colon as the delimiter and return the split string in a
+              tuple otherwise if the : isn't present, return a tuple whose
+              values are None
+        """
+        if decoded_base64_authorization_header is None:
+            return (None, None)
+        if not isinstance(decoded_base64_authorization_header, str):
+            return (None, None)
+        if ':' in decoded_base64_authorization_header:
+            parts = decoded_base64_authorization_header.split(':', 1)
+
+            part1 = parts[0]
+            part2 = parts[1]
+
+            return (part1, part2)
+        else:
+            return (None, None)
+        return
