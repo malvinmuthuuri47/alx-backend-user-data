@@ -40,7 +40,7 @@ class Auth:
         """current_user function"""
         return None
 
-    def session_cookie(self, request=None):
+    def session_cookie(self, request=None) -> str:
         """This function returns a cookie value from a request"""
         if request is None:
             return None
