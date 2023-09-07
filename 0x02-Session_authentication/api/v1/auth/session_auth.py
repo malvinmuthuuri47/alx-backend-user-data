@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Empty session"""
 from api.v1.auth.auth import Auth
+from models.user import User
 import uuid
 
 
@@ -30,3 +31,21 @@ class SessionAuth(Auth):
             return None
         else:
             return SessionAuth.user_id_by_session_id.get(session_id)
+
+    def current_user(self, request=None):
+        """This function returns a User instance based on a cookie value
+        Methodology:
+            1. Obtain the cookie value from the request
+            2. Use the cookie value to obtain the session ID
+            3. Use the session ID to obtain the associated User ID
+            4. Use the user ID to fetch the User instance
+        """
+        cookie_val = self.session_cookie(request)
+        if cookie_val is None:
+            return None
+        session_id = cookie_val
+        user_id = self.user_id_for_session_id(session_id)
+        if user_id is None:
+            return None
+        user = User.get(user_id)
+        return user
