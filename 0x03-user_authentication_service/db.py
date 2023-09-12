@@ -47,12 +47,11 @@ class DB:
         """This method returns the first row found in the users table as
         filtered by the method's input arguments
         """
-        valid_fields = ['id', 'email', 'hashed_password', 'session_id',
-                        'reset_token']
-        invalid_keys = [key for key in kwargs if key not in valid_fields]
-        if invalid_keys:
+        if not kwargs:
             raise InvalidRequestError
+
         user = self._session.query(User).filter_by(**kwargs).first()
+
         if not user:
             raise NoResultFound
         return user
