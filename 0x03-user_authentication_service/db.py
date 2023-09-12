@@ -60,17 +60,11 @@ class DB:
         """This function updates the user's attributes whose id corresponds
         to the id provided to the function"""
         user = self.find_user_by(id=user_id)
-        valid_attributes = ['email', 'hashed_password', 'session_id',
-                            'reset_token']
-        invalid_attributes = [attr for attr in valid_attributes if not
-                              hasattr(user, attr)]
 
-        if invalid_attributes:
-            raise ValueError
-
-        for attr, value in kwargs.items():
-            if attr in valid_attributes:
-                setattr(user, attr, value)
+        for k, v in kwargs.items():
+            if not hasattr(user, k):
+                raise ValueError
+            setattr(user, k, v)
 
         self._session.commit()
         return None
