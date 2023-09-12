@@ -42,35 +42,3 @@ class DB:
         self._session.add(new_user)
         self._session.commit()
         return new_user
-
-    def find_user_by(self, **kwargs) -> User:
-        """This method returns the first row found in the users table as
-        filtered by the method's input arguments
-        """
-        if not kwargs:
-            raise InvalidRequestError
-
-        user = self._session.query(User).filter_by(**kwargs).first()
-
-        if not user:
-            raise NoResultFound
-        return user
-
-    def update_user(self, user_id, **kwargs) -> None:
-        """This function updates the user's attributes whose id corresponds
-        to the id provided to the function"""
-        user = self.find_user_by(id=user_id)
-        valid_attributes = ['email', 'hashed_password', 'session_id',
-                            'reset_token']
-        invalid_attributes = [attr for attr in valid_attributes if not
-                              hasattr(user, attr)]
-
-        if invalid_attributes:
-            raise ValueError
-
-        for attr, value in kwargs.items():
-            if attr in valid_attributes:
-                setattr(user, attr, value)
-
-        self._session.commit()
-        return None
