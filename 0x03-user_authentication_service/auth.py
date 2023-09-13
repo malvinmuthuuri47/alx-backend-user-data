@@ -22,6 +22,22 @@ class Auth:
             user = self._db.add_user(email, passwd)
             return user
 
+    def valid_login(self, email: str, password: str) -> bool:
+        """This function searches for a user by email and if the user
+        exists, it checks the password hash. If if matches, it returns
+        true and false otherwise."""
+        try:
+            user = self._db.find_user_by(email=email)
+            if user:
+                # print(user.hashed_password)
+                passwd_bytes = password.encode('utf-8')
+                hashed_passwd = user.hashed_password
+                if bcrypt.checkpw(passwd_bytes, hashed_passwd):
+                    return True
+                return False
+        except Exception:
+            return False
+
 
 def _hash_password(password: str) -> bytes:
     """This function handles the hashing part of the code by first
