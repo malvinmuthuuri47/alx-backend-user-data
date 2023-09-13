@@ -61,11 +61,14 @@ class Auth:
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """This function finds a user by session ID and either returns a user
         or returns None"""
-        user = self._db.find_user_by(session_id=session_id)
-        if user:
-            return user
-        else:
+        if not session_id:
             return None
+        else:
+            user = self._db.find_user_by(session_id=session_id)
+            if user:
+                return user
+            else:
+                return None
 
 
 def _hash_password(password: str) -> bytes:
