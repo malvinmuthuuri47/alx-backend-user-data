@@ -91,6 +91,18 @@ class Auth:
         except NoResultFound:
             raise ValueError
 
+    def update_password(self, reset_token: str, password: str) -> None:
+        """Update password"""
+        try:
+            user = self._db.find_user_by(reset_token=reset_token)
+            hashed_pwd = _hash_password(password)
+            self._db.update_user(user.id,
+                                 hashed_password=hashed_pwd,
+                                 reset_token=None
+                                 )
+        except NoResultFound:
+            raise ValueError
+
 
 def _hash_password(password: str) -> bytes:
     """This function handles the hashing part of the code by first
