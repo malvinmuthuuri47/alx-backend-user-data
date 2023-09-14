@@ -46,6 +46,22 @@ def login():
         session['session_id'] = AUTH.create_session(email)
         response_data = {"email": email, "message": "logged in"}
         return jsonify(response_data), 200
+    return
+
+
+@app.route('/sessions', methods=['DELETE'])
+def logout():
+    """DELETE session"""
+    session_id = request.cookies.get("session_id")
+    try:
+        user = AUTH.get_user_from_session_id(session_id)
+        if user:
+            AUTH.destroy_session(user.id)
+            return redirect('/')
+        else:
+            abort(403)
+    except Exception:
+        return
 
 
 if __name__ == "__main__":
