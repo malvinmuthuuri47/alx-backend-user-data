@@ -43,10 +43,10 @@ def login():
     if not user:
         abort(401)
     else:
-        session['session_id'] = AUTH.create_session(email)
-        response_data = {"email": email, "message": "logged in"}
-        return jsonify(response_data), 200
-    return
+        session_id = AUTH.create_session(email)
+        session = jsonify({"email": email, "message": "logged in"})
+        session.set_cookie('session_id', session_id)
+        return session
 
 
 @app.route('/sessions', methods=['DELETE'])
@@ -60,6 +60,17 @@ def logout() -> str:
     else:
         abort(403)
 
+
+@app.route('/profile', methods=['GET'])
+def profile() -> str:
+    """Profile function"""
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        user_email = user.email
+        return jsonify({"email": user_email}), 200
+    else:
+        abort(403)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000", debug=True)
