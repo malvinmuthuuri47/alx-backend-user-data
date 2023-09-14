@@ -59,6 +59,7 @@ def logout() -> str:
     else:
         abort(403)
 
+
 @app.route('/profile', methods=['GET'])
 def profile():
     """Profile function"""
