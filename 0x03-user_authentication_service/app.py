@@ -59,7 +59,7 @@ def sessions():
 @app.route('/sessions', methods=['DELETE'])
 def del_session():
     """Delete session"""
-    session_id = request.form.get("session_id")
+    session_id = session.cookies.get("session_id")
     try:
         user = AUTH.get_user_from_session_id(session_id)
         if user:
