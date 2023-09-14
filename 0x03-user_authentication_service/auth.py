@@ -81,6 +81,16 @@ class Auth:
         except Exception as e:
             print(e)
 
+    def get_reset_password_token(self, email: str) -> str:
+        """Generate reset password token"""
+        try:
+            user = self._db.find_user_by(email=email)
+            user_uuid = _generate_uuid()
+            self._db.update_user(user.id, reset_token=user_uuid)
+            return user_uuid
+        except NoResultFound:
+            raise ValueError
+
 
 def _hash_password(password: str) -> bytes:
     """This function handles the hashing part of the code by first
