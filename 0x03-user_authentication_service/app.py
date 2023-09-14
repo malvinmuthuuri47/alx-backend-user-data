@@ -35,7 +35,7 @@ def users():
 
 
 @app.route('/sessions', methods=['POST'])
-def sessions():
+def login():
     """Sessions route"""
     email = request.form.get("email")
     password = request.form.get("password")
@@ -56,6 +56,18 @@ def logout() -> str:
     if user:
         AUTH.destroy_session(user.id)
         return redirect('/')
+    else:
+        abort(403)
+
+@app.route('/profile', methods=['GET'])
+def profile():
+    """Profile function"""
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        user_email = user.email
+        print(user_email)
+        return jsonify({"email": user_email}), 200
     else:
         abort(403)
 
