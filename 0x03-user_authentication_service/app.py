@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 """Basic Flask app"""
 
-from flask import Flask, jsonify, request, abort, session
+from flask import (
+        Flask,
+        jsonify,
+        request,
+        abort,
+        session,
+        redirect,
+        url_for
+        )
 from auth import Auth
 import os
 
@@ -46,6 +54,21 @@ def sessions():
         session['session_id'] = AUTH.create_session(email)
         response_data = {"email": email, "message": "logged in"}
         return jsonify(response_data), 200
+
+
+@app.route('/sessions', methods=['DELETE'])
+def del_session():
+    """Delete session"""
+    session_id = request.form.get("session_id")
+    try:
+        user = AUTH.get_user_from_session_id(session_id)
+        if user:
+            AUTH.destroy_session(user.id)
+            return redirect(url_for("index"))
+        else:
+            abort(403)
+    except Exception as e:
+        return str(e), 500
 
 
 if __name__ == "__main__":
